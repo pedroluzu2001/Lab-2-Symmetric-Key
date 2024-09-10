@@ -63,19 +63,21 @@ and enter your password.
 
 **Has the output changed? [Yes]**
 
-**Why has it changed?**Cause the behavior of base64 codification, what has changed two times. 
+**Why has it changed?** Cause the behavior of base64 codification, what has changed two times. 
 
 ### A.6 Now let’s decrypt the encrypted file with the correct format:
 
 - `openssl enc -d -aes-256-cbc -in encrypted.bin -pass pass:napier base64`
 
 **Has the output been decrypted correctly?**
+Yes
 
 **What happens when you use the wrong password?**
+Occurs an error with the decryption method
 
 ### A.7 Now encrypt a file with Blowfish and see if you can decrypt it.
 
-**Did you manage to decrypt the file? [Yes][No]**
+**Did you manage to decrypt the file? [Yes]**
 
 # Padding (AES) (0.25p)
 
@@ -83,13 +85,13 @@ With encryption, we normally use a block cipher, and where we must pad the end b
 
 - Web link (Padding): [http://asecuritysite.com/encryption/padding](http://asecuritysite.com/encryption/padding)
 
-## No Description Result
+## Description Result
 
 ### B.1 With AES which uses a 256-bit key, what is the normal block size (in bytes).
 
-**Block size (bytes):**
+**Block size (bytes):** 128
 
-**Number of hex characters for block size:**
+**Number of hex characters for block size:** 32
 
 ### B.2 Go to:
 
@@ -97,16 +99,16 @@ With encryption, we normally use a block cipher, and where we must pad the end b
 
 Using 256-bit AES encryption, and a message of “kettle” and a password of “oxtail”, determine the cipher using the differing padding methods (you only need to show the first six hex characters).
 
-**CMS:**
+**CMS:**  6b6574746c650a0a0a0a0a0a0a0a0a0a
 
 ### B.3 For the following words, estimate how many hex characters will be used for the 256-bit AES encryption (do not include the inverted commas for the string to encrypt):
 
 **Number of hex characters:**
 
-- “fox”:
-- “foxtrot”:
-- “foxtrotanteater”:
-- “foxtrotanteatercastle”:
+- “fox”:32 hex characters
+- “foxtrot”: 32 hex characters
+- “foxtrotanteater”: 32 hex characters
+- “foxtrotanteatercastle”: 64 hex characters
 
 # Padding (DES) (0.25p)
 
@@ -114,11 +116,11 @@ In the first part of this lab we will investigate padding blocks:
 
 ## No Description Result
 
-### C.1 With DES which uses a 64-bit key, what is the normal block size (in bytes):
+### C.1 With DES which uses a 64-bit key, what is the normal block size (in bytes): 8
 
-**Block size (bytes):**
+**Block size (bytes):** 16
 
-**Number of hex characters for block size:**
+**Number of hex characters for block size:** 4
 
 ### C.2 Go to:
 
@@ -126,16 +128,16 @@ In the first part of this lab we will investigate padding blocks:
 
 Using 64-bit DES key encryption, and a message of “kettle” and a password of “oxtail”, determine the cipher using the differing padding methods.
 
-**CMS:**
+**CMS:** 6b6574746c650202
 
 ### C.3 For the following words, estimate how many hex characters will be used for the 64-bit key DES encryption:
 
 **Number of hex characters:**
 
-- “fox”:
-- “foxtrot”:
-- “foxtrotanteater”:
-- “foxtrotanteatercastle”:
+- “fox”: 16 hex characters
+- “foxtrot”: 16 hex characters
+- “foxtrotanteater”: 32 hex characters
+- “foxtrotanteatercastle”: 48 hex characters
 
 # Python Coding (Encrypting) (1p)
 
@@ -143,26 +145,56 @@ In this part of the lab, we will investigate the usage of Python code to perform
 
 Run the program, and prove that it works. And identify the code which does the following:
 
-**Generates key:**
+**Generates key:** 
+
+`key = hashlib.sha256(password.encode()).digest()`
 
 **Pads and unpads:**
+`def pad(data, size=128):
+    padder = padding.PKCS7(size).padder()
+    padded_data = padder.update(data) + padder.finalize()
+    return padded_data`
+
+`def unpad(data, size=128):
+    unpadder = padding.PKCS7(size).unpadder()
+    unpadded_data = unpadder.update(data) + unpadder.finalize()
+    return unpadded_data`
 
 **Encrypts and decrypts:**
+
+`def encrypt(plaintext, key, mode):
+    method = algorithms.AES(key)
+    cipher = Cipher(method, mode)
+    encryptor = cipher.encryptor()
+    ct = encryptor.update(plaintext) + encryptor.finalize()
+    return ct`
+
+`def decrypt(ciphertext, key, mode):
+    method = algorithms.AES(key)
+    cipher = Cipher(method, mode)
+    decryptor = cipher.decryptor()
+    pl = decryptor.update(ciphertext) + decryptor.finalize()
+    return pl`
 
 ### D1. Now update the code so that you can enter a string and the program will show the cipher text. The format will be something like:
 
 - `python d_01.py hello mykey`
 
-where “hello” is the plain text, and “mykey” is the key.
+### Where “hello” is the plain text, and “mykey” is the key.
+
+-`Before padding:  hello`
+-`After padding (CMS):  b'68656c6c6f0b0b0b0b0b0b0b0b0b0b0b'`
+-`Cipher (ECB):  b'0a7ec77951291795bac6690c9e7f4c0d'`
+-`Decrypted:  hello`
 
 Now determine the cipher text for the following (the first example has already been completed – just add the first four hex characters):
 
 | Message   | Key        | CMS       | Cipher              |
 |-----------|------------|-----------|---------------------|
-| “hello”   | “hello123” |           | 0a7e (c77951291795bac6690c9e7f4c0d) |
-| “inkwell” | “orange”   |           |                     |
-| “security”| “qwerty”   |           |                     |
-| “Africa”  | “changeme” |           |                     |
+| “hello”   | “hello123” |68656c6c6f0b0b0b0b0b0b0b0b0b0b0b           | 0a7e (c77951291795bac6690c9e7f4c0d) |
+| “inkwell” | “orange”   |696e6b77656c6c090909090909090909           |484299ceec1ad83b1ce848b0a9733c8d                     |
+| “security”| “qwerty”   |73656375726974790808080808080808           |6be35165e2c9a624de4f401692fe7161                     |
+| “Africa”  | “changeme” |4166726963610a0a0a0a0a0a0a0a0a0a           |c283f9cf046e82aa6e03b9b91e19b244                     |
 
 ### D2. Now copy your code and modify it so that it implements 64-bit DES and complete the table (Ref to: [https://asecuritysite.com/symmetric/padding_des2](https://asecuritysite.com/symmetric/padding_des2)):
 
