@@ -7,7 +7,7 @@ padding. The key tools used include OpenSSL, Python and JavaScript.
 
 OpenSSL is a standard tool that we used in encryption. It supports many of the standard symmetric key methods, including AES, 3DES, ChaCha20, and RC4.
 
-## No Description Result
+##Description Result
 
 ### A.1 Use:
 
@@ -200,10 +200,10 @@ Now determine the cipher text for the following (the first example has already b
 
 | Message   | Key        | CMS       | Cipher              |
 |-----------|------------|-----------|---------------------|
-| “hello”   | “hello123” |           | 4cd9 (24baf0c9ac60) |
-| “inkwell” | “orange”   |           |                     |
-| “security”| “qwerty”   |           |                     |
-| “Africa”  | “changeme” |           |                     |
+| “hello”   | “hello123” |68656c6c6f030303           |4cd9 (24baf0c9ac60) |
+| “inkwell” | “orange”   |696e6b77656c6c01           |9e0971175e4dfd5a                     |
+| “security”| “qwerty”   |73656375726974790808080808080808           |c043b5bba3191fd888223899ba2bcbea                     |
+| “Africa”  | “changeme” |4166726963610202           |b29d82215ae2c264                     |
 
 Now modify the code so that the user can enter the values from the keyboard, such as with:
 
@@ -216,16 +216,16 @@ Now modify your coding for 256-bit AES ECB encryption, so that you can enter the
 
 | CMS Cipher (256-bit AES ECB) | Key     | Plain text |
 |-------------------------------|---------|------------|
-| b436bd84d16db330359edebf49725c62 | “hello” |            |
-| 4bb2eb68fccd6187ef8738c40de12a6b | “ankle” |            |
-| 029c4dd71cdae632ec33e2be7674cc14 | “changeme” |            |
-| d8f11e13d25771e83898efdbad0e522c | “123456” |            |
+| b436bd84d16db330359edebf49725c62 | “hello” |  germany          |
+| 4bb2eb68fccd6187ef8738c40de12a6b | “ankle” | spain           |
+| 029c4dd71cdae632ec33e2be7674cc14 | “changeme” | england           |
+| d8f11e13d25771e83898efdbad0e522c | “123456” | scotland           |
 
 Now modify your coding for 64-bit DES ECB encryption, so that you can enter the cipher text, and an encryption key, and the code will decrypt to provide the result. You should use CMS for padding. With this, determine the plaintext for the following (note, all the plain text values are countries around the World):
 
 | CMS Cipher (128-bit DES ECB) | Key     | Plain text |
 |------------------------------|---------|------------|
-| 0b8bd1e345e7bbf0 | “hello” |            |
+| 0b8bd1e345e7bbf0 | “hello” | Germany           |
 | 6ee95415aca2b33c | “ankle” |            |
 | c08c3078bc88a6c3 | “changeme” |            |
 | 9d69919c37c375645451d92ae15ea399 | “123456” |            |
