@@ -307,19 +307,49 @@ Finally explain why an exhaustive search cannot work with OTP (One-Time Pad), ev
 
 The reason an exhaustive key search does not work against an OTP system is that it does not reduce the ambiguity of the plaintext. Every possible plaintext is equally likely, making it impossible to identify the correct one without additional information. This is the essence of OTP’s unconditional security.
 
-# Data Encryption Standard (DES) (0.25p)
+## Data Encryption Standard (DES)
 
-### 3.1 S-boxes in DES
+### 3.1. S-Boxes Nonlinearity
+Show that S1(x1)⊕S1(x2) ¹ S1(x1 ⊕ x2):
+- a. For x1 = 000000 and x2 = 000001.
+- b. For x1 = 111111 and x2 = 100000.
+- c. For x1 = 101010 and x2 = 010101.
 
-Verify that the S-boxes are non-linear for the given input pairs.
-
-### 3.2 Initial and Inverse Permutation
-
+### 3.2. Inverse Operations of IP
 Show that IP−1(IP(x)) = x for the first five bits of x.
 
-### 3.3 First Round Encryption Output
+### 3.3. Output of the First Round of DES (All Zeros)
+What is the output of the first round of the DES algorithm when both the plaintext and the key are all zeros?
 
-Explain what the first round encryption output should be for the given input bits.
+### 3.4. Output of the First Round of DES (All Ones)
+What is the output of the first round of the DES algorithm when both the plaintext and the key are all ones?
+
+### 3.5. Avalanche Effect in DES
+- a. How many S-boxes get different inputs compared to the case when an all-zero plaintext is provided, given an input word with a “1” at bit position 57 and all other bits as well as the key are zero?
+- b. What is the minimum number of output bits of the S-boxes that will change according to the S-box design criteria?
+- c. What is the output after the first round?
+- d. How many output bits after the first round have actually changed compared to the case when the plaintext is all zero?
+
+### 3.6. Avalanche Effect in DES Key
+- a. Assume an encryption with a given key. If the key bit at position 1 (prior to PC−1) is flipped, which S-boxes in which rounds are affected by the bit flip during DES encryption?
+- b. Which S-boxes in which DES rounds are affected by this bit flip during DES decryption?
+
+## Advanced Encryption Standard (AES)
+
+### 4.1. Output of the First Round of AES
+For AES with a 128-bit block length and 128-bit key length, what is the output of the first round if the plaintext and the first subkey both consist of 128 ones? You can write your final results in a rectangular array format if you wish.
+
+### 4.2. Diffusion Properties of AES
+- a. Compute the output of the first round of AES with input `W = (w0, w1, w2, w3) = (0x01000000, 0x00000000, 0x00000000, 0x00000000)` and subkeys `W0 = 0x2B7E1516`, `W1 = 0x28AED2A6`, `W2 = 0xABF71588`, `W3 = 0x09CF4F3C`, `W4 = 0xA0FAFE17`, `W5 = 0x88542CB1`, `W6 = 0x23A33939`, `W7 = 0x2A6C7605`. Indicate all intermediate steps for ShiftRows, SubBytes, and MixColumns.
+- b. Compute the output of the first round of AES for the case where all input bits are zero.
+- c. How many output bits have changed? Note that we only consider a single round — further rounds will cause more output bits to change (avalanche effect).
+
+
+
+
+
+
+
 
 
 
