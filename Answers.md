@@ -310,25 +310,316 @@ The reason an exhaustive key search does not work against an OTP system is that 
 ## Data Encryption Standard (DES)
 
 ### 3.1. S-Boxes Nonlinearity
-Show that S1(x1)⊕S1(x2) ¹ S1(x1 ⊕ x2):
+Show that S1(x1)⊕S1(x2) is not equal to S1(x1 ⊕ x2):
 - a. For x1 = 000000 and x2 = 000001.
 - b. For x1 = 111111 and x2 = 100000.
 - c. For x1 = 101010 and x2 = 010101.
 
+### Case (A)
+For S1(x1 ⊕  x2)= 00000.
+
+And S1(x1) ⊕ S1(x2) = 001110.
+
+*Then: S1(x1 ⊕  x2)= 00000 is not equal to S1(x1) ⊕ S1(x2) = 001110* 
+
+### Case (B)
+- **Inputs**:
+  -x1 = 111111 
+  -x2 = 100000 
+
+- **Results**:
+  -  S1(x1 ⊕ x2) = 1100 
+  -  S1(x1) ⊕ S1(x2) = 101011 
+
+*Then: S1(x1 ⊕ x2) = 1100 is not equal to S1(x1) ⊕ S1(x2) = 101011*
+
+---
+
+### Case (C)
+- **Inputs**:
+  -  x1 = 101010
+  -  x2 = 010101
+
+- **Results**:
+  -S1(x1 ⊕ x2) = 0111 
+  -S1(x1) ⊕ S1(x2) = 110101
+
+*Then: S1(x1 ⊕ x2) = 0111  is not equal to S1(x1) ⊕ S1(x2) = 110101*
+
+
+
+
+
 ### 3.2. Inverse Operations of IP
-Show that IP−1(IP(x)) = x for the first five bits of x.
+# Verification of Inverse Permutation in DES
+
+We want to verify that the initial permutation (IP) and its inverse (IP⁻¹) are truly inverse operations. We consider a vector `x = (x1, x2,...,x64)` of 64 bits. The goal is to show that:
+
+1. **Apply the initial permutation (IP)**:  
+   Let `y = IP(x) = (y1, y2,...,y64)`.  
+   The permutation reorders the bits as follows:
+   - `y40 = x1`
+   - `y8 = x2`
+   - `y48 = x3`
+   - `y16 = x4`
+   - `y56 = x5`
+
+2. **Apply the inverse permutation (IP⁻¹)**:  
+   Now, applying `IP⁻¹(y)` reverts the reordering. For the first five bits, we have:
+   IP⁻¹(y)=(y40, y8, y48, y16, y56,...) = (x1, x2, x3, x4, x5,...)
+
+   
+Since `y40 = x1`, `y8 = x2`, `y48 = x3`, `y16 = x4`, and `y56 = x5`, we conclude that:
+
+
+  IP⁻¹(IP(y))= (x1, x2, x3, x4, x5,...)
+
+  
+Thus, the inverse permutation `IP⁻¹` correctly restores the original vector `x`
 
 ### 3.3. Output of the First Round of DES (All Zeros)
 What is the output of the first round of the DES algorithm when both the plaintext and the key are all zeros?
 
+- **Plaintext**: All zeros (`000000...000000`)
+- **Key**: All zeros (`000000...000000`)
+## 1. Initial Permutation (IP)
+- **Plaintext (x)**: All bits set to zero `(x = 0, 0, 0,...,0)`.
+- Since all bits are equal, applying the initial permutation `IP(x)` does not change the plaintext:
+  - `IP(x) = x`
+
+## 2. Initial Splitting (L0 and R0)
+- After `IP(x) = x`, both the left half `L0` and the right half `R0` of the plaintext are composed of all-zero bits:
+  - `L0 = 0, 0, 0,...,0`
+  - `R0 = 0, 0, 0,...,0`
+
+## 3. Key Generation - PC-1
+- **Key (k)**: All bits set to zero `(k = 0, 0, 0,...,0)`.
+- Applying `PC-1` to the key results in 56 zero bits:
+  - `L = 0, 0, 0,...,0`
+
+## 4. Key Transformation
+- **Transform 1**: Rotates the two halves of `L` by one bit. Since `L` is all zeros, the result is unchanged:
+  - `L = 0, 0, 0,...,0`
+- **PC-2**: Permutation operation that results in `k1` as 48 zero bits:
+  - `k1 = 0, 0, 0,...,0`
+
+## 5. Function f (First Round)
+1. **Expansion Permutation**:
+   - Expands `R0` (which is all zeros) into 48 zero bits:
+     - `y = 0, 0, 0,...,0`
+   
+2. **XOR Operation**:
+   - Performs XOR between `y` and `k1` (both are zero arrays):
+     - `z = 0, 0, 0,...,0`
+
+3. **S-Box Application**:
+   - Divides `z` into 8 blocks of 6 bits (all zeros) and applies the S-boxes:
+     - `S1: 000000 → 1110 (14 in decimal)`
+     - `S2: 000000 → 1111 (15 in decimal)`
+     - `S3: 000000 → 1010 (10 in decimal)`
+     - `S4: 000000 → 0111 (07 in decimal)`
+     - `S5: 000000 → 0010 (02 in decimal)`
+     - `S6: 000000 → 1100 (12 in decimal)`
+     - `S7: 000000 → 0100 (04 in decimal)`
+     - `S8: 000000 → 1101 (13 in decimal)`
+   - **Result** after S-boxes:  
+     `11101111101001110010110001001101`
+
+4. **Permutation**:
+   - Applies a permutation on the result from the S-boxes:
+     - **Result** after permutation:  
+       `11011000110110001101111110111100`
+
+5. **XOR with L0**:
+   - Performs XOR between the permuted result and `L0` (which is all zeros):
+     - **Result**:  
+       `11011000110110001101111110111100`
+
+## 6. Final Round Result
+- **R1**: Result of the XOR operation:
+  - `R1 = 11011000110110001101111110111100`
+- **L1**: Set equal to `R0` (all zeros):
+  - `L1 = 0, 0, 0,...,0`
+
+### Final Output of First Round
+- **L1 R1**:  
+  `00000000000000000000000000000000 11011000110110001101111110111100`
+
 ### 3.4. Output of the First Round of DES (All Ones)
 What is the output of the first round of the DES algorithm when both the plaintext and the key are all ones?
 
-### 3.5. Avalanche Effect in DES
-- a. How many S-boxes get different inputs compared to the case when an all-zero plaintext is provided, given an input word with a “1” at bit position 57 and all other bits as well as the key are zero?
-- b. What is the minimum number of output bits of the S-boxes that will change according to the S-box design criteria?
-- c. What is the output after the first round?
-- d. How many output bits after the first round have actually changed compared to the case when the plaintext is all zero?
+## 1. Key Generation - PC-1
+- **Key (k1)**: Applying PC-1 results in 48 one bits:
+  - `k1 = 1, 1, 1,...,1`
+
+## 2. Initial Permutation (IP)
+- **Plaintext (x)**: All bits set to one `(x = 1, 1, 1,...,1)`.
+- After applying the initial permutation `IP(x)`, the result remains 64 one bits:
+  - `L0 = 1, 1, 1,...,1` (32 bits)
+  - `R0 = 1, 1, 1,...,1` (32 bits)
+
+## 3. Function f (First Round)
+1. **Expansion Permutation**:
+   - Expands `R0` (all ones) into 48 one bits:
+     - `y = 1, 1, 1,...,1`
+   
+2. **XOR Operation**:
+   - Performs XOR between `k1` (all ones) and `y` (all ones), resulting in an array of all zeros:
+     - `z = 0, 0, 0,...,0`
+
+3. **S-Box Application**:
+   - Divides `z` into 8 blocks of 6 bits (all zeros) and applies the S-boxes:
+     - **Result** after S-boxes:  
+       `11001111101001110010110001001101`
+
+4. **Permutation**:
+   - Applies a permutation on the result from the S-boxes:
+     - **Result** after permutation:  
+       `11011000110110001101101110111100`
+
+5. **XOR with L0**:
+   - Performs XOR between the permuted result and `L0` (all ones):
+     - **Result**:  
+       `00100111001001110010010001000011`
+
+## 4. Final Round Result
+- **R1**: Result of the XOR operation:
+  - `R1 = 00100111001001110010010001000011`
+- **L1**: Set equal to `R0` (all ones):
+  - `L1 = 1, 1, 1,...,1`
+
+### Final Output of First Round
+- **L1 R1**:  
+  `11111111111111111111111111111111 00100111001001110010010001000011`
+
+  
+
+# Question 3.5 - Avalanche Effect in DES
+
+It is desirable for good block ciphers that a change in one input bit affects many output bits, a property called diffusion or the avalanche effect. In this section, we explore the avalanche effect in DES by applying an input word that has a "1" at bit position 57, with all other bits and the key set to zero. (Note: the input word must go through the initial permutation).
+
+## a. How many S-boxes receive different inputs compared to the case when an all-zero plaintext is provided?
+
+In the first round, only one S-box receives a different input because the initial permutation (IP) sends the "1" to position 33, affecting S1. This is demonstrated by a series of XOR operations between the key and the expanded right halves of the data blocks in each round, resulting in different inputs for the S-boxes.
+
+### The XOR operations for each round are as follows:
+```
+-K1 ⊕ E(R0) = 000000 000000 000000 000000 000000 000000 000000 000000 
+
+K1 ⊕ E(R0) = 010000 000000 000000 000000 000000 000000 000000 000001 
+```
+
+```
+-K2 ⊕ E(R1) = 011011 110001 011011 110001 011011 110111 110111 111001 
+
+K2 ⊕ E(R1) = 011010 100000 001011 110000 001011 110111 110011 111101
+ ```
+```
+-K3 ⊕ E(R2) = 111100 001110 100111 110101 011101 011010 101001 011111 
+
+K3 ⊕ E(R2) = 000100 000101 011110 101110 100110 100001 011101 010100 
+```
+```
+-K4 ⊕ E(R3) = 101110 100011 111011 110101 011000 000100 001000 001010
+
+K4 ⊕ E(R3) = 001011 110111 111111 110100 001101 010111 110100 001100 
+```
+```
+-K5 ⊕ E(R4) = 110011 111010 101001 010000 000101 011101 011001 010011 
+
+K5 ⊕ E(R4) = 101011 111100 001000 001011 111100 000100 001010 101110
+```
+```
+-K6 ⊕ E(R5) = 110110 100010 101111 110111 110101 011001 011100 000111 
+
+K6 ⊕ E(R5) = 010001 010110 100011 110010 101111 110111 111100 000001
+```
+```
+-K7 ⊕ E(R6) = 101010 100010 100010 100011 110101 010001 010011 111110 
+
+K7 ⊕ E(R6) = 011111 111011 111101 010011 110001 010010 101001 010101 
+```
+```
+-K8 ⊕ E(R7) = 101111 110110 100010 100100 000111 110101 010111 111110 
+
+K8 ⊕ E(R7) = 000011 110011 111011 111110 100001 010110 101011 111000 
+```
+```
+-K9 ⊕ E(R8) = 010010 100000 001111 110100 000010 100111 111110 100001
+
+K9 ⊕ E(R8) = 010011 110000 000000 001000 000001 010101 011001 010001 
+```
+```
+-K10 ⊕ E(R9) = 010001 010000 000011 110010 100001 011000 001010 100001 
+
+K10 ⊕ E(R9) = 101100 000100 000010 101101 011011 111010 100000 000110 
+```
+```
+-K11 ⊕ E(R10) = 000100 001011 111010 100010 101010 100010 101111 111000 
+
+K11 ⊕ E(R10) = 000101 010110 100001 011000 000111 110001 010100 000000 
+```
+```
+-K12 ⊕ E(R11) = 011110 100111 111101 011111 110010 100010 101111 111101 
+
+K12 ⊕ E(R11) = 011111 111010 101111 110100 000110 101110 101110 100001 
+```
+```
+-K13 ⊕ E(R12) = 111001 011111 111111 111110 101011 111001 010100 001011 
+
+K13 ⊕ E(R12) = 010010 101101 011100 000111 110010 101110 100010 100101 
+```
+```
+-K14 ⊕ E(R13) = 001011 110100 001011 111011 110100 000110 101001 010100 
+
+K14 ⊕ E(R13) = 111111 111101 011011 111010 101101 011001 011101 010011 
+```
+```
+-K15 ⊕ E(R14) = 000000 001011 110001 011001 010101 011010 100001 010100 
+
+K15 ⊕ E(R14) = 010001 010110 100110 101111 111010 101010 100010 100101 
+```
+```
+-K16 ⊕ E(R15) = 111000 000100 001000 001110 100101 011110 100011 110011 
+
+K16 ⊕ E(R15) = 010111 110111 111101 010100 000001 011011 111000 000101 
+```
+-Finally, we have 8*14+7+2=121 out of 128 S-boxes get different input 
+## b. What is the minimum number of output bits from the S-boxes that will change according to the S-box design criteria?
+
+In S-box 1 (S1), the minimum number of output bit changes, in response to a change in the input, can be as low as zero. For example, when analyzing the S1 box, the output for both `000001` and `011100` input values is `00` in binary. Thus, the output remains consistent even though the inputs differ by 4 bits.
+
+## c. What is the output after the first round?  
+### Case 1: Plaintext with all zeros
+
+- **L0:** A 32-bit block of all zeros: ```0000 0000 0000 0000 0000 0000 0000 0000```
+- **R0:** A 32-bit block of all zeros: ```0000 0000 0000 0000 0000 0000 0000 0000```
+- **K1:** A 48-bit key with all bits set to zero:```000000 000000 000000 000000 000000 000000```
+- **E(R0):** A 48-bit expansion of R0 (all zeros): ```000000 000000 000000 000000 000000 000000 000000 000000```
+- **K1 ⊕ E(R0):** XOR of K1 and E(R0) results in: ```000000 000000 000000 000000 000000 000000 000000 000000```
+- **S(K1 ⊕ E(R0)):** After passing through the S-boxes, the result is:```1110 1111 1010 0111 0010 1100 0100 1101```
+- **f:** Applying the permutation P gives: ```1101 1000 1101 1000 1101 1011 1011 1100```
+- **L1 = R0:** Remains unchanged: ```0000 0000 0000 0000 0000 0000 0000 0000```
+- **R1 = L0 ⊕ f(R0, K1):** XOR of L0 and the result of f(R0, K1): ```1101 1000 1101 1000 1101 1011 1011 1100```
+  
+### Thus, the output after the first round is a combination of the above results:
+
+-L1 = 0000 0000 0000 0000 0000 0000 0000 0000 R1 = ```1101 1000 1101 1000 1101 1011 1011 1100```\
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
 
 ### 3.6. Avalanche Effect in DES Key
 - a. Assume an encryption with a given key. If the key bit at position 1 (prior to PC−1) is flipped, which S-boxes in which rounds are affected by the bit flip during DES encryption?
