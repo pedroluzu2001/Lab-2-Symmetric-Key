@@ -604,31 +604,42 @@ In S-box 1 (S1), the minimum number of output bit changes, in response to a chan
   
 ### Thus, the output after the first round is a combination of the above results:
 
--L1 = 0000 0000 0000 0000 0000 0000 0000 0000 R1 = ```1101 1000 1101 1000 1101 1011 1011 1100```\
+-L1 = 0000 0000 0000 0000 0000 0000 0000 0000 R1 = ```1101 1000 1101 1000 1101 1011 1011 1100```
 
 
+## d.  How many output bit after the first round have actually changed compared to the 
+case when the plaintext is all zero? (Observe that we only consider a single round 
+here. There will be more and more output differences after every new round. Hence 
+the term avalanche effect.) 
 
-  
-  
-
-
-
-
-
-
-
-
-
+-  Six different output bits comparing the previous question.
 
 
 ### 3.6. Avalanche Effect in DES Key
-- a. Assume an encryption with a given key. If the key bit at position 1 (prior to PC−1) is flipped, which S-boxes in which rounds are affected by the bit flip during DES encryption?
+
+ - a. Assume an encryption with a given key. If the key bit at position 1 (prior to PC−1) is flipped, which S-boxes in which rounds are affected by the bit flip during DES encryption?
+
+When a key bit at position 1 (before the PC-1 permutation) is flipped during DES encryption, its effect on the S-boxes across different rounds is as follows:
+
+- 1. **Round 1:** The flipped key bit at position 1 influences S-boxes 2, 3, 4, 5, 6, and 7.
+- 2. **Round 2:** The flipped key bit affects S-boxes 2, 3, 5, and 7.
+- 3. **Round 3:** The flipped key bit impacts S-boxes 2, 3, 4, 6, and 7.
+- 4. **Rounds 4-8:** The effect of the flipped key bit is observed on S-boxes 2, 3, 5, and 7.
+- 5. **Rounds 9-16:** The key bit flip affects S-boxes 2, 3, 4, 6, and 7.
+
+As seen, the impact of the key bit flip at position 1 varies across different rounds in the DES encryption process.
+
+
 - b. Which S-boxes in which DES rounds are affected by this bit flip during DES decryption?
+
+When a bit flip occurs in the key at position 1 during DES decryption, the impact on the S-boxes is similar to that during encryption, but in reverse order. This is due to the fact that DES decryption utilizes the subkeys in the reverse order compared to encryption. Consequently, the S-boxes affected by the key bit flip during decryption are the same as those affected during encryption, but the sequence of affected S-boxes is reversed.
 
 ## Advanced Encryption Standard (AES)
 
 ### 4.1. Output of the First Round of AES
 For AES with a 128-bit block length and 128-bit key length, what is the output of the first round if the plaintext and the first subkey both consist of 128 ones? You can write your final results in a rectangular array format if you wish.
+
+
 
 ### 4.2. Diffusion Properties of AES
 - a. Compute the output of the first round of AES with input `W = (w0, w1, w2, w3) = (0x01000000, 0x00000000, 0x00000000, 0x00000000)` and subkeys `W0 = 0x2B7E1516`, `W1 = 0x28AED2A6`, `W2 = 0xABF71588`, `W3 = 0x09CF4F3C`, `W4 = 0xA0FAFE17`, `W5 = 0x88542CB1`, `W6 = 0x23A33939`, `W7 = 0x2A6C7605`. Indicate all intermediate steps for ShiftRows, SubBytes, and MixColumns.
