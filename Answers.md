@@ -684,6 +684,7 @@ For a diffusion check after one round of AES, let \( W = (w0, w1, w2, w3) = (0x0
 - a. Compute the output of the first round of AES with input `W = (w0, w1, w2, w3) = (0x01000000, 0x00000000, 0x00000000, 0x00000000)` and subkeys `W0 = 0x2B7E1516`, `W1 = 0x28AED2A6`, `W2 = 0xABF71588`, `W3 = 0x09CF4F3C`, `W4 = 0xA0FAFE17`, `W5 = 0x88542CB1`, `W6 = 0x23A33939`, `W7 = 0x2A6C7605`. Indicate all intermediate steps for ShiftRows, SubBytes, and MixColumns.
 
 ### We have to represent the different outputs like a table:
+
 ![image](https://github.com/user-attachments/assets/a671c533-6a57-4b1f-adc4-d946066a9325)
 
 Then, we have tu substite the different expressions with te S1 table, and we obtain:
@@ -696,6 +697,8 @@ Then we apply the shift of the AES algorithm:
 
 
 The final transformation (other than the k1 addition) is the MixColumn layer. This involves a Galois Extension Field matrix multiplication with the following description:
+
+
 ![image](https://github.com/user-attachments/assets/5ab93eec-d93b-4b0a-857c-0f98cdcb22a1)
 
 
