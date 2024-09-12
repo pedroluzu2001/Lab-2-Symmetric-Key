@@ -639,12 +639,98 @@ When a bit flip occurs in the key at position 1 during DES decryption, the impac
 ### 4.1. Output of the First Round of AES
 For AES with a 128-bit block length and 128-bit key length, what is the output of the first round if the plaintext and the first subkey both consist of 128 ones? You can write your final results in a rectangular array format if you wish.
 
+- First Step
+In this step, each byte of the state is substituted using the AES S-Box. Given that the plaintext consists of 0xFF for each byte, the S-Box maps 0xFF to itself.
+Therefore: 
+
+- **State after Byte Substitution:** ```[FF FF FF FF] [FF FF FF FF] [FF FF FF FF] [FF FF FF FF]```
+
+### Step 2: ShiftRows
+
+The ShiftRows operation rearranges the bytes within each row of the state matrix. Since all bytes are the same (0xFF), this step does not alter the state:
+
+- **State after ShiftRows:** ```[FF FF FF FF] [FF FF FF FF] [FF FF FF FF] [FF FF FF FF]```
+
+### Step 3: MixColumns
+
+In MixColumns, each column of the state matrix is transformed using matrix multiplication. For a column of all 0xFF, the transformation is as follows:
+
+- **Matrix Multiplication for Each Column:** ```[02 03 01 01] [FF] = [E9] [01 02 03 01] [FF] = [E9] [01 01 02 03] [FF] = [E9] [03 01 01 02] [FF] = [E9]```
+- In GF(2^8), `01 + 01 + 02 + 03 = 01`. Thus, the result for each column is: ```[E9] [E9] [E9] [E9]```
+- **State after MixColumns:** ```[E9 E9 E9 E9] [E9 E9 E9 E9] [E9 E9 E9 E9] [E9 E9 E9 E9]``` 
+### Step 4: Add Round Key
+
+Perform a bitwise XOR between the state matrix and the round key. Given the round key is also 0xFF:
+
+- **Compute the XOR:**```[E9 E9 E9 E9] ⊕ [FF FF FF FF] = [16 16 16 16] [E9 E9 E9 E9] ⊕ [FF FF FF FF] = [16 16 16 16] [E9 E9 E9 E9] ⊕ [FF FF FF FF] = [16 16 16 16] [E9 E9 E9 E9] ⊕ [FF FF FF FF] = [16 16 16 16]```
+- **State after Add Round Key:** ```[16 16 16 16] [16 16 16 16] [16 16 16 16] [16 16 16 16]```
+### Diffusion Check
+
+For a diffusion check after one round of AES, let \( W = (w0, w1, w2, w3) = (0x01000000, 0x00000000, 0x00000000, 0x00000000) \) be the input in 32-bit chunks. The subkeys for the first round are:
+
+- \( W0 = 0x2B7E1516 \)
+- \( W1 = 0x28AED2A6 \)
+- \( W2 = 0xABF71588 \)
+- \( W3 = 0x09CF4F3C \)
+- \( W4 = 0xA0FAFE17 \)
+- \( W5 = 0x88542CB1 \)
+- \( W6 = 0x23A33939 \)
+- \( W7 = 0x2A6C7605 \)
+
+
 
 
 ### 4.2. Diffusion Properties of AES
 - a. Compute the output of the first round of AES with input `W = (w0, w1, w2, w3) = (0x01000000, 0x00000000, 0x00000000, 0x00000000)` and subkeys `W0 = 0x2B7E1516`, `W1 = 0x28AED2A6`, `W2 = 0xABF71588`, `W3 = 0x09CF4F3C`, `W4 = 0xA0FAFE17`, `W5 = 0x88542CB1`, `W6 = 0x23A33939`, `W7 = 0x2A6C7605`. Indicate all intermediate steps for ShiftRows, SubBytes, and MixColumns.
+
+### We have to represent the different outputs like a table:
+![image](https://github.com/user-attachments/assets/a671c533-6a57-4b1f-adc4-d946066a9325)
+
+Then, we have tu substite the different expressions with te S1 table, and we obtain:
+
+![image](https://github.com/user-attachments/assets/741d9e9e-8367-44e2-83ac-f967d05a539c)
+
+Then we apply the shift of the AES algorithm:
+
+![image](https://github.com/user-attachments/assets/bbcf2b7a-20d9-44f1-8088-d004c3d3bfb8)
+
+
+The final transformation (other than the k1 addition) is the MixColumn layer. This involves a Galois Extension Field matrix multiplication with the following description:
+![image](https://github.com/user-attachments/assets/5ab93eec-d93b-4b0a-857c-0f98cdcb22a1)
+
+
+The C values refer to the outputted column. The B values refer to the input columns which were the output of the ShiftRows layer. The indexes here are preserved from prior to the shift. Each new column can be calculated left-to-right using this procedure.
+
+As such the calculation to be performed is as follows for each of the columns:
+
+![image](https://github.com/user-attachments/assets/6c428d33-35a6-454f-aa80-b329786a6502)
+
+This produces:
+
+![image](https://github.com/user-attachments/assets/8d38ad3a-9190-4922-93f0-fc2401e20ffa)
+
+After that, we apply the KeyAddition Layer for k1. And we obtain: ```F4CC6B539B60AA8F1F010F045790A2D3```
+
 - b. Compute the output of the first round of AES for the case where all input bits are zero.
+For the case that the input is all-zeroes, the state after the k0 key addition will be:
+
+![image](https://github.com/user-attachments/assets/5c2e49f7-ed53-4867-a400-ff8ce2b36e8b)
+
+After appliying the byteSubstitution and ShiftRows layer, we obtain:
+
+![image](https://github.com/user-attachments/assets/2c7bbc4d-f0e6-4693-af4f-515e3d2a2841)
+
+After that, we introduce some difussion. We obtain: ```DCD87F6F9B60AA8F1F010F045790A2D3```
+
 - c. How many output bits have changed? Note that we only consider a single round — further rounds will cause more output bits to change (avalanche effect).
+- 
+We can see how many output bits have been altered by XORing the two output values together. This produces:
+
+```2814143c000000000000000000000000```
+
+In this form, we can clearly see that only the first column is altered after the first round.
+
+```2814143c16=101000000101000001010000111100```
 
 
 
