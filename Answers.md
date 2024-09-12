@@ -114,7 +114,7 @@ Using 256-bit AES encryption, and a message of “kettle” and a password of �
 
 In the first part of this lab we will investigate padding blocks:
 
-## No Description Result
+##Description Result
 
 ### C.1 With DES which uses a 64-bit key, what is the normal block size (in bytes): 8
 
@@ -225,10 +225,10 @@ Now modify your coding for 64-bit DES ECB encryption, so that you can enter the 
 
 | CMS Cipher (128-bit DES ECB) | Key     | Plain text |
 |------------------------------|---------|------------|
-| 0b8bd1e345e7bbf0 | “hello” | Germany           |
-| 6ee95415aca2b33c | “ankle” |            |
-| c08c3078bc88a6c3 | “changeme” |            |
-| 9d69919c37c375645451d92ae15ea399 | “123456” |            |
+| 0b8bd1e345e7bbf0 | “hello” | germany           |
+| 6ee95415aca2b33c | “ankle” | france           |
+| c08c3078bc88a6c3 | “changeme” | england            |
+| 9d69919c37c375645451d92ae15ea399 | “123456” |   scotland         |
 
 Now update your program, so that it takes a cipher string in Base-64 and converts it to a hex string and then decrypts it. From this now decrypt the following Base-64 encoded cipher streams (which should give countries of the World):
 
